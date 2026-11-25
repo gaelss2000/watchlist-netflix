@@ -29,6 +29,15 @@ docker compose up -d
 docker exec -i watchlist-db mysql -uroot -proot --default-character-set=utf8mb4 watchlist < database/seed.sql
 ```
 
+Opcional: pósters reales (los de `seed.sql` son marcadores de posición):
+
+```bash
+docker exec -i watchlist-db mysql -uroot -proot --default-character-set=utf8mb4 watchlist < database/posters.sql
+```
+
+`database/posters.sql` se generó con `scripts/posters.mjs`, que busca cada título en la API de TMDB. Para regenerarlo hace falta una clave propia: `TMDB_TOKEN='...' node scripts/posters.mjs`.
+
+
 El esquema (`database/schema.sql`) se crea solo la primera vez que arranca el contenedor. `seed.sql` carga 20 títulos de ejemplo.
 
 **2. API**
@@ -75,3 +84,7 @@ Los filtros del buscador salen de las columnas de `titulos` (nombre, tipo, año)
 - **CORS:** la API solo acepta peticiones desde `http://localhost:5173`.
 - **Imágenes:** `imagen_url` guarda un enlace. En los datos de ejemplo son marcadores de posición.
 - **Filtros en el servidor:** la API construye una única consulta SQL con solo los filtros que llegan.
+
+## Créditos
+
+Los pósters provienen de TMDB. Este producto usa la API de TMDB pero no está avalado ni certificado por TMDB.
