@@ -18,6 +18,7 @@ Aplicación para crear listas de seguimiento de películas y series. Prueba téc
 5. Añadir un título a una lista
 6. Quitar un título de una lista
 7. Eliminar listas de seguimiento
+8. Cambiar entre modo claro y oscuro
 
 ## Cómo ejecutarlo
 
@@ -81,7 +82,7 @@ Los filtros del buscador salen de las columnas de `titulos` (nombre, tipo, año)
 - **Contraseñas:** se guardan cifradas con BCrypt, nunca en texto plano.
 - **Sesión sencilla:** el enunciado no pide seguridad avanzada, así que el login solo comprueba usuario y contraseña. La sesión se guarda en `localStorage`.
 - **CORS:** la API solo acepta peticiones desde `http://localhost:5173`.
-- **Imágenes:** `imagen_url` guarda un enlace. En los datos de ejemplo son marcadores de posición.
+- **Imágenes:** `imagen_url` guarda enlaces a pósters de TMDB para los títulos de ejemplo. La aplicación no necesita una clave de TMDB para mostrarlos.
 - **Filtros en el servidor:** la API construye una única consulta SQL con solo los filtros que llegan.
 
 ## Créditos
