@@ -4,16 +4,47 @@ import { API_URL } from '../api'
 
 const titulos = ref([])
 const generos = ref([])
+const cargando = ref(true)
+const error = ref('')
+const errorGeneros = ref('')
 
 const filtros = ref({ nombre: '', tipo: '', genero: '', anio: '' })
+let busquedaActual = 0
 
 async function buscar() {
+  const numeroBusqueda = ++busquedaActual
+  cargando.value = true
+  error.value = ''
+
   const params = new URLSearchParams()
   for (const [clave, valor] of Object.entries(filtros.value)) {
     if (valor) params.append(clave, valor)
   }
-  const respuesta = await fetch(`${API_URL}/titulos?${params}`)
-  titulos.value = await respuesta.json()
+
+  try {
+    const respuesta = await fetch(`${API_URL}/titulos?${params}`)
+    if (!respuesta.ok) throw new Error('La búsqueda no se pudo completar.')
+
+    const resultados = await respuesta.json()
+    if (numeroBusqueda === busquedaActual) titulos.value = resultados
+  } catch {
+    if (numeroBusqueda === busquedaActual) {
+      titulos.value = []
+      error.value = 'No se pudieron cargar los títulos. Inténtalo de nuevo.'
+    }
+  } finally {
+    if (numeroBusqueda === busquedaActual) cargando.value = false
+  }
+}
+
+async function cargarGeneros() {
+  try {
+    const respuesta = await fetch(`${API_URL}/generos`)
+    if (!respuesta.ok) throw new Error('No se pudieron cargar los géneros.')
+    generos.value = await respuesta.json()
+  } catch {
+    errorGeneros.value = 'No se pudieron cargar los géneros.'
+  }
 }
 
 function limpiar() {
@@ -21,9 +52,8 @@ function limpiar() {
   buscar()
 }
 
-onMounted(async () => {
-  const respuesta = await fetch(`${API_URL}/generos`)
-  generos.value = await respuesta.json()
+onMounted(() => {
+  cargarGeneros()
   buscar()
 })
 </script>
@@ -57,9 +87,15 @@ onMounted(async () => {
     </div>
   </form>
 
-  <p v-if="titulos.length === 0" class="text-muted">No hay resultados.</p>
+  <p v-if="errorGeneros" class="text-warning" role="status">{{ errorGeneros }}</p>
+  <div v-if="cargando" class="text-muted py-4 text-center" role="status">
+    <span class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>
+    Cargando títulos…
+  </div>
+  <p v-else-if="error" class="text-danger" role="alert">{{ error }}</p>
+  <p v-else-if="titulos.length === 0" class="text-muted">No hay resultados.</p>
 
-  <div class="row g-3">
+  <div v-else class="row g-3">
     <div v-for="t in titulos" :key="t.id" class="col-6 col-md-4 col-lg-3">
       <div class="card h-100">
         <img :src="t.imagenUrl" class="card-img-top" :alt="t.nombre" />

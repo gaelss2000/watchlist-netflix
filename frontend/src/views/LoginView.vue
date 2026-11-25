@@ -27,5 +27,8 @@ async function entrar() {
       <p v-if="error" class="text-danger">{{ error }}</p>
       <button class="btn btn-danger w-100">Entrar</button>
     </form>
+    <p class="mt-3 mb-0 text-center">
+      ¿No tienes cuenta? <RouterLink to="/registro">Regístrate</RouterLink>
+    </p>
   </div>
 </template>

@@ -17,6 +17,7 @@ Aplicación para crear listas de seguimiento de películas y series. Prueba téc
 4. Ficha de cada película o serie
 5. Añadir un título a una lista
 6. Quitar un título de una lista
+7. Eliminar listas de seguimiento
 
 ## Cómo ejecutarlo
 
@@ -26,19 +27,17 @@ Requisitos: Docker, .NET 8 SDK y Node.js.
 
 ```bash
 docker compose up -d
-docker exec -i watchlist-db mysql -uroot -proot --default-character-set=utf8mb4 watchlist < database/seed.sql
 ```
 
-Opcional: pósters reales (los de `seed.sql` son marcadores de posición):
+En el primer arranque, Docker crea el esquema y carga los datos de ejemplo y sus pósters automáticamente. Los scripts solo se ejecutan cuando MySQL inicializa una base de datos vacía.
+
+Si ya tenías una base de datos inicializada antes de este cambio y quieres aplicar los pósters, ejecuta una vez:
 
 ```bash
 docker exec -i watchlist-db mysql -uroot -proot --default-character-set=utf8mb4 watchlist < database/posters.sql
 ```
 
-`database/posters.sql` se generó con `scripts/posters.mjs`, que busca cada título en la API de TMDB. Para regenerarlo hace falta una clave propia: `TMDB_TOKEN='...' node scripts/posters.mjs`.
-
-
-El esquema (`database/schema.sql`) se crea solo la primera vez que arranca el contenedor. `seed.sql` carga 20 títulos de ejemplo.
+`database/posters.sql` contiene las URLs precargadas. Para regenerarlo con `scripts/posters.mjs` hace falta una clave propia de TMDB: `TMDB_TOKEN='...' node scripts/posters.mjs`. La clave no se necesita para ejecutar la aplicación.
 
 **2. API**
 
@@ -59,9 +58,9 @@ npm run dev
 
 Abrir `http://localhost:5173`.
 
-**4. Usuario de prueba**
+**4. Crear una cuenta**
 
-El registro no tiene pantalla en la web. Para crear un usuario, usa `POST /api/Auth/register` desde Swagger:
+En la web, abre **Regístrate** desde la pantalla de inicio de sesión. Al completar el formulario, la sesión se inicia automáticamente. También puedes crear una cuenta desde Swagger con `POST /api/Auth/register`:
 
 ```json
 { "username": "gael", "password": "1234" }

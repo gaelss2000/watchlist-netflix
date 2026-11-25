@@ -42,6 +42,21 @@ public class ListasController(WatchlistContext db) : ControllerBase
 
         return Ok(new { lista.Id, lista.Nombre, TotalTitulos = 0 });
     }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(int id, int usuarioId)
+    {
+        var lista = await db.Listas
+            .FirstOrDefaultAsync(l => l.Id == id && l.UsuarioId == usuarioId);
+
+        if (lista is null)
+            return NotFound("La lista no existe.");
+
+        db.Listas.Remove(lista);
+        await db.SaveChangesAsync();
+
+        return NoContent();
+    }
     
     [HttpGet("{id}/titulos")]
     public async Task<IActionResult> GetTitulos(int id)
