@@ -40,6 +40,12 @@ docker exec -i watchlist-db mysql -uroot -proot --default-character-set=utf8mb4 
 
 `database/posters.sql` contiene las URLs precargadas. Para regenerarlo con `scripts/posters.mjs` hace falta una clave propia de TMDB: `TMDB_TOKEN='...' node scripts/posters.mjs`. La clave no se necesita para ejecutar la aplicación.
 
+Si los títulos de una base ya inicializada aparecen con caracteres como `Ã©`, puedes corregir los datos de ejemplo sin borrar usuarios ni listas:
+
+```bash
+docker exec -i watchlist-db mysql -uroot -proot --default-character-set=utf8mb4 watchlist < database/fix-encoding.sql
+```
+
 **2. API**
 
 ```bash
@@ -81,7 +87,7 @@ Los filtros del buscador salen de las columnas de `titulos` (nombre, tipo, año)
 - **Entity Framework Core (Database First):** el esquema se diseñó primero en SQL y las clases se generaron con `dotnet ef dbcontext scaffold`.
 - **Contraseñas:** se guardan cifradas con BCrypt, nunca en texto plano.
 - **Sesión sencilla:** el enunciado no pide seguridad avanzada, así que el login solo comprueba usuario y contraseña. La sesión se guarda en `localStorage`.
-- **CORS:** la API solo acepta peticiones desde `http://localhost:5173`.
+- **CORS:** la API acepta peticiones desde `http://localhost:5173` y `http://127.0.0.1:5173`.
 - **Imágenes:** `imagen_url` guarda enlaces a pósters de TMDB para los títulos de ejemplo. La aplicación no necesita una clave de TMDB para mostrarlos.
 - **Filtros en el servidor:** la API construye una única consulta SQL con solo los filtros que llegan.
 

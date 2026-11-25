@@ -1,3 +1,5 @@
+SET NAMES utf8mb4;
+
 INSERT INTO tipos (nombre) VALUES ('Película'), ('Serie');
 
 INSERT INTO generos (nombre) VALUES
